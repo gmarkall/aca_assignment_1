@@ -7,7 +7,8 @@
 //
 //=============================================
 
-#include <subs.h>
+#include <stdio.h>
+#include "subs.h"
 
 // Simulation parameters. Don't change these from the defaults.
 
@@ -32,4 +33,6 @@ int main(int argc, char **argv)
 
   printf("Converged in %d iterations", iterations);
   output_positions(1);
+
+  return 0;
 }
