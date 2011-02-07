@@ -7,6 +7,8 @@
 //
 //=============================================
 
+#include <subs.h>
+
 // Simulation parameters. Don't change these from the defaults.
 
 #define NUM_PARTICLES 1000
@@ -15,6 +17,10 @@
 #define STD_DEV_FAC 0.0
 #define PARTICLE_RADIUS 5.0E-05
 
+#define GRAVITY_FACTOR 0.1
+#define TIME_FACTOR 0.003
+#define MIN_THRESHOLD 0.2
+
 int main(int argc, char **argv)
 {
   int iterations;
@@ -22,8 +28,8 @@ int main(int argc, char **argv)
   distribute_particles_randomly();
   output_positions(0);
 
-  iterations = particlepos(0.1, 0.003, 0.2); // What are these magic numbers?
+  iterations = particlepos(GRAVITY_FACTOR, TIME_FACTOR, MIN_THRESHOLD);
 
-  printf("With gravity, converged in %d iterations", iterations);
+  printf("Converged in %d iterations", iterations);
   output_positions(1);
 }
