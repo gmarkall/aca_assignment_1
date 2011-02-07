@@ -9,8 +9,6 @@
  *   x[n+1] = a * x[n] mod m */
 /* http://remus.rutgers.edu/~rhoads/Code/random.c no recommendation implied! */
 
-static unsigned int SEED = 93186752;
-
 /* return the next random number x: 0 <= x < 1*/
 double drand48 ()  
 {
