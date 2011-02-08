@@ -50,6 +50,37 @@ double sqr(double num)
   return pow(num, 2);
 }
 
+/* Cube a number */
+double cube(double num)
+{
+  return pow(num, 3);
+}
+
+/* Return the smallest value in the prad array, excluding entries */
+/* that are zero.                                                 */
+double minval_prad()
+{
+  /* This initial value *should* be greater than any in prad */
+  double output = 10.0;
+
+  int i;
+
+  for (i=0; i<numparticles; ++i)
+  {
+    double candidate = prad[i];
+
+    if (candidate > 0.0)
+    {
+      if (candidate < output)
+      {
+        output = candidate;
+      }
+    }
+  }
+
+  return output;
+}
+
 /* Set simulation parameters, allocate arrays */
 void initialise(int num_particles, int random_seed, double spring_krepel, 
                 double std_dev_fac, double particle_radius)
@@ -231,7 +262,131 @@ void output_positions(int file_index)
 
 int particlepos(int grav_fac, int dt_fac, int min_threshold)
 {
+  /* Number of update iterations */
   int iterations = 0;
+  /* Particle index numbers */
+  int p, n;
+  /* Number of iterations where the force has dropped below threshold */
+  int z = 0;
+  /* Distance between particles */
+  double dxp, dyp;
+  /* Force between particles */
+  double fxp, fyp;
+  /* Average force, max allowable force, overlap magnitude */
+  double avforce, fmax, vecscale;
+  /* Particle radius */
+  double prn, prp;
+  /* Particle x and y coords */
+  double nx, ny, px, py;
+  /* Distance of current particle from origin */
+  double dist;
+  /* Min force from smallest allowable overlap */
+  double fmin;
+  /* Gravity force, magnitude of force, sum of radii */
+  double fgrav, fmag, rsum;
+  /* Maximum movement a particle can do in a timestep */
+  double pmovemax, pmovemin;
+  /* Damping factor, internal time step */
+  double damping, dtint;
+
+  /* The most we want to move is 1/20th the smallest */
+  /* radius in the system.                           */
+  pmovemax = minval_prad() / 20.0;
+  /* The minimum we want a particle to move is       */
+  /* is 1/1000th of the max.                         */
+  pmovemin = pmovemax/1000.0;
+  /* Min and max forces as a result of some small    */
+  /* overlap.                                        */
+  fmax = springkrepel*pmovemax;
+  fmin = springkrepel*min_threshold*minval_prad();
+
+  /* Damping (not currently used) and timestep       */
+  /* are from simple harmonic motion. These affect   */
+  /* stability and convergence speed.                */
+  damping = 20.0*sqrt( cube( minval_prad() / particlerad ) * springkrepel);
+  dtint =  dt_fac*sqrt( cube( minval_prad() / particlerad ) * springkrepel);
+
+  fgrav = 50.0 * fmax * grav_fac;
+  /* This large value to prevent the while loop terminating immediately */
+  avforce = 100.0;
+  
+  /* Initialise velocities to zero */
+  for (p=0; p<numparticles; ++p)
+  {
+    vparticles[p_index(0,p)] = 0.0;
+    vparticles[p_index(1,p)] = 0.0;
+  }
+
+  /* Iterate until force has been below threshold for 3 iterations */
+  while (z<3)
+  {
+    if (avforce < fmin)
+    {
+      ++z;
+    }
+
+    /* Initialise forces between particles to zero */
+    for (p=0; p<numparticles; ++p)
+    {
+      fparticles[p_index(0,p)] = 0.0;
+      fparticles[p_index(1,p)] = 0.0;
+    }
+
+    /* Compute the gravity vector */
+    for (p=0; p<numparticles; ++p)
+    {
+      px = pparticles[p_index(0,p)];
+      py = pparticles[p_index(1,p)];
+      
+      dist = sqrt( sqr(px) + sqr(py) );
+
+      /* At the origin we need to leave the gravity vector as zero */
+      if (dist != 0.0)
+      {
+        dxp = px / dist;
+	dyp = py / dist;
+	fparticles[p_index(0,p)] = -dxp*fgrav;
+	fparticles[p_index(1,p)] = -dyp*fgrav;
+      }
+    }
+    
+    /* Resolve the forces between the p-th and n-th particles */
+    for (n=0; n < (numparticles-1); ++n)
+    {
+      nx = pparticles[p_index(0,n)];
+      ny = pparticles[p_index(1,n)];
+      prn = prad[n];
+      
+      for (p=(n+1); p < (numparticles); ++p)
+      {
+        dxp = pparticles[p_index(0,p)] - nx;
+        dyp = pparticles[p_index(1,p)] - ny;
+	prp = prad[p];
+	rsum = prp + prn;
+	dist = sqr(dxp) + sqr(dyp);
+
+	/* If particles overlap, compute the force between them */
+	if (dist < sqr(rsum))
+	{
+          dist = sqrt(dist);
+	  vecscale = rsum - dist;
+	  fmag = springkrepel * (vecscale / rsum);
+	  fxp = (fmag * dxp) / dist;
+	  fyp = (fmag * dyp) / dist;
+	  fparticles[p_index(0,p)] += fxp;
+	  fparticles[p_index(1,p)] += fyp;
+	  fparticles[p_index(0,n)] -= fxp;
+	  fparticles[p_index(1,n)] -= fyp;
+	}
+      }
+    }
+
+    /* Compute average force between particles */
+
+    /* I WAS HERE I WAS HERE I WAS HERE */
+    /* I WAS HERE I WAS HERE I WAS HERE */
+    /* I WAS HERE I WAS HERE I WAS HERE */
+  }
 
   return iterations;
 }
