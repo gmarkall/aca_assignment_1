@@ -26,8 +26,6 @@ int main(int argc, char **argv)
 {
   int iterations;
 
-  printf("rad: %15.12f\n",PARTICLE_RADIUS);
-
   initialise(NUM_PARTICLES, RANDOM_SEED, SPRING_KREPEL, STD_DEV_FAC, PARTICLE_RADIUS);
 
   distribute_particles_randomly();

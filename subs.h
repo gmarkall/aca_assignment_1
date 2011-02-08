@@ -3,8 +3,8 @@
 #ifndef _SUBS_H
 #define _SUBS_H
 
-void initialise(int num_particles, int random_seed, int spring_krepel, 
-                int std_dev_fac, int particle_radius);
+void initialise(int num_particles, int random_seed, double spring_krepel, 
+                double std_dev_fac, double particle_radius);
 
 void finalise();
 

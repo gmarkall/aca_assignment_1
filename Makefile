@@ -17,4 +17,4 @@ demsettle: $(OBJS)
 	$(LD) $(LDFLAGS) $(OBJS) -o demsettle
 
 clean:
-	rm -f *.o demsettle
+	rm -f *.o demsettle 0 1
