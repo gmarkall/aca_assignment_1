@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
+#include <string.h>
 #include "subs.h"
 
 static double* pparticles;           /* Particle x, y coordinates    */
@@ -200,7 +201,32 @@ void distribute_particles_randomly()
 
 void output_positions(int file_index)
 {
+  char filename[2];
+  FILE *fp;
+  int p;
 
+  filename[0] = '0'+file_index;
+  filename[1] = '\0';
+  fp = fopen(filename, "w");
+
+  if (fp == NULL)
+  {
+    fprintf(stderr, "Error opening output file.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  for (p=0; p<numparticles; ++p)
+  {
+    double x, y, r;
+
+    x = pparticles[p_index(0,p)];
+    y = pparticles[p_index(1,p)];
+    r = prad[p];
+
+    fprintf(fp, "%15.12f\t%15.12f\t%15.12f\n", x, y, r);
+  }
+
+  fclose(fp);
 }
 
 int particlepos(int grav_fac, int dt_fac, int min_threshold)
