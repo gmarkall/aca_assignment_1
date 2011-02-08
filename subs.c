@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 #include "subs.h"
 
 static double* pparticles;           /* Particle x, y coordinates    */
@@ -40,6 +41,12 @@ double max(double u, double v)
   {
     return v;
   }
+}
+
+/* Square a number */
+double sqr(double num)
+{
+  return pow(num, 2);
 }
 
 /* Set simulation parameters, allocate arrays */
@@ -90,7 +97,40 @@ void finalise()
 
 double normal_distribution()
 {
-  return 0.0;
+  double output;
+  double randomx, randomy, rdistheight, actualy;
+  double stddev, gaussian;
+  bool accept;
+
+  stddev = stddevfac*particlerad;
+
+  /* By default, reject the particle */
+  accept = false;
+
+  /* Get the height of the probability distribution */
+  rdistheight = 1.0 / (sqrt(2.0*pi*stddev*stddev));
+
+  /* Choose random numbers until we find an acceptable one */
+  while (!accept)
+  {
+    randomx = drand48();
+    randomy = drand48();
+    randomx = (upperprad-lowerprad)*randomx + lowerprad;
+    randomy = rdistheight*randomy;
+
+    /* Find the point on the gaussian curve from randomx */
+    gaussian = exp( -(sqr(randomx-particlerad)) / (2.0*sqr(stddev)) );
+    actualy = (1.0 / (sqrt(2.0*pi*sqr(stddev)))) * gaussian;
+
+    /* Test if the random number is acceptable */
+    if (randomy <= actualy)
+    {
+      output = randomx;
+      accept = true;
+    }
+  }
+
+  return output;
 }
 
 void distribute_particles_randomly()
