@@ -6,6 +6,8 @@
 void initialise(int num_particles, int random_seed, int spring_krepel, 
                 int std_dev_fac, int particle_radius);
 
+void finalise();
+
 void distribute_particles_randomly();
 
 void output_positions(int file_index);

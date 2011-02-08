@@ -36,5 +36,7 @@ int main(int argc, char **argv)
   printf("Converged in %d iterations", iterations);
   output_positions(1);
 
+  finalise();
+
   return 0;
 }

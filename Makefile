@@ -1,8 +1,8 @@
 
 CC := gcc
 LD := gcc
-CFLAGS := -O3 -Wall -Werror
-LDFLAGS := -lm
+CFLAGS := -g -Wall -Werror
+LDFLAGS := -lm -g
 
 OBJS := main.o subs.o ss_rand.o
 
