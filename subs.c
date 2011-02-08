@@ -59,6 +59,7 @@ void initialise(int num_particles, int random_seed, int spring_krepel,
   springkrepel = spring_krepel;
   stddevfac = std_dev_fac;
   particlerad = particle_radius;
+    printf("Particlerad %15.12f\n",particlerad);
 
   /* particle_array_size needs to be big enough to hold 2D *
    * coordinates for each particle.                        */
@@ -148,7 +149,7 @@ void distribute_particles_randomly()
 
   for (p=0; p<numparticles; ++p)
   {
-    if (stddevfac>0)
+    if (stddevfac>0.0)
     {
       double outputrad = normal_distribution();
       prad[p] = outputrad;
@@ -186,9 +187,13 @@ void distribute_particles_randomly()
     theta = theta*2.0*pi;
     tabletdr = particlerad;
 
+    printf("Particlerad %15.12f\n",particlerad);
+
     pparticles[p_index(0,p)] = cos(theta)*tabletdr;
     pparticles[p_index(1,p)] = sin(theta)*tabletdr;
-
+    
+    printf("new particle x %f\n",pparticles[p_index(0,p)]);
+    printf("new particle y %f\n",pparticles[p_index(1,p)]);
     /* Let the system settle with the current number of */
     /* active particles.                                */
     numparticles = p;

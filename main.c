@@ -16,7 +16,7 @@
 #define RANDOM_SEED 1234
 #define SPRING_KREPEL 10.0
 #define STD_DEV_FAC 0.0
-#define PARTICLE_RADIUS 5.0E-05
+#define PARTICLE_RADIUS 0.00005
 
 #define GRAVITY_FACTOR 0.1
 #define TIME_FACTOR 0.003
@@ -25,6 +25,8 @@
 int main(int argc, char **argv)
 {
   int iterations;
+
+  printf("rad: %15.12f\n",PARTICLE_RADIUS);
 
   initialise(NUM_PARTICLES, RANDOM_SEED, SPRING_KREPEL, STD_DEV_FAC, PARTICLE_RADIUS);
 
