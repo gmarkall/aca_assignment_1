@@ -26,6 +26,8 @@ int main(int argc, char **argv)
 {
   int iterations;
 
+  initialise(NUM_PARTICLES, RANDOM_SEED, SPRING_KREPEL, STD_DEV_FAC, PARTICLE_RADIUS);
+
   distribute_particles_randomly();
   output_positions(0);
 
