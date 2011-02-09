@@ -12,7 +12,7 @@
 
 // Simulation parameters. Don't change these from the defaults.
 
-#define NUM_PARTICLES 40
+#define NUM_PARTICLES 1000
 #define RANDOM_SEED 1234
 #define SPRING_KREPEL 10.0
 #define STD_DEV_FAC 0.0
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
   output_positions(0);
 
   iterations = particlepos(GRAVITY_FACTOR, TIME_FACTOR, MIN_THRESHOLD);
-
+  
   printf("Converged in %d iterations", iterations);
   output_positions(1);
 

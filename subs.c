@@ -8,7 +8,7 @@
 #include "subs.h"
 
 /* How long do we iterate for before deciding to escape? */
-#define MAX_ITER 100
+#define MAX_ITER 50000
 /* How many dips below threshold force before we exit the iteration loop? */
 #define MAX_DIPS_BELOW_THRESHOLD 2
 
@@ -262,7 +262,7 @@ void output_positions(int file_index)
     y = pparticles[p_index(1,p)];
     r = prad[p];
 
-    fprintf(fp, "%15.12f\t%15.12f\t%15.12f\n", x, y, r);
+    fprintf(fp, "%20.19f\t%20.19f\t%20.19f\n", x, y, r);
   }
 
   fclose(fp);
@@ -310,8 +310,8 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
   fmax = springkrepel*pmovemax;
   fmin = springkrepel*min_threshold*minval_prad();
 
-  printf("Fmin %f\n",fmin);
-  printf("Fmax %f\n",fmax);
+  printf("Fmin %20.19f\n",fmin);
+  printf("Fmax %20.19f\n",fmax);
 
   /* Damping (not currently used) and timestep       */
   /* are from simple harmonic motion. These affect   */
@@ -319,18 +319,18 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
   damping = 20.0*sqrt( cube( minval_prad() / particlerad ) * springkrepel);
   dtint =  dt_fac*sqrt( cube( minval_prad() / particlerad ) / springkrepel);
 
-  printf("minval_prad: %f\n", minval_prad());
-  printf("dt_fac: %f\n",dt_fac);
-  printf("springkrepel: %f\n",springkrepel);
+  printf("minval_prad: %20.19f\n", minval_prad());
+  printf("dt_fac: %20.19f\n",dt_fac);
+  printf("springkrepel: %20.19f\n",springkrepel);
 
-  printf("Damping %f\n",damping);
-  printf("Dting %f\n",dtint);
-  printf("Particlerad: %f\n",particlerad);
+  printf("Damping %20.19f\n",damping);
+  printf("Dting %20.19f\n",dtint);
+  printf("Particlerad: %20.19f\n",particlerad);
 
   for (p=0; p<numparticles; ++p)
   {
-    printf("Pos x: %f\n", pparticles[p_index(0,p)]);
-    printf("Pos y: %f\n", pparticles[p_index(1,p)]);
+    printf("Pos x: %20.19f\n", pparticles[p_index(0,p)]);
+    printf("Pos y: %20.19f\n", pparticles[p_index(1,p)]);
   }
 
   fgrav = 50.0 * fmax * grav_fac;
@@ -367,7 +367,7 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
       
       dist = sqrt( sqr(px) + sqr(py) );
       
-      printf("Distance: %f\n",dist);
+      printf("Distance: %20.19f\n",dist);
 
       /* At the origin we need to leave the gravity vector as zero */
       if (dist != 0.0)
@@ -403,8 +403,8 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
 	  fmag = springkrepel * (vecscale / rsum);
 	  fxp = (fmag * dxp) / dist;
 	  fyp = (fmag * dyp) / dist;
-	  printf("Force x: %f\n",fxp);
-	  printf("Force y: %f\n",fyp);
+	  printf("Force x: %20.19f\n",fxp);
+	  printf("Force y: %20.19f\n",fyp);
 	  fparticles[p_index(0,p)] += fxp;
 	  fparticles[p_index(1,p)] += fyp;
 	  fparticles[p_index(0,n)] -= fxp;
@@ -422,7 +422,7 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
     }
     avforce = avforce / numparticles;
 
-    printf("Average force; %f\n",avforce);
+    printf("Average force; %20.19f\n",avforce);
 
     /* Compute force on particles after damping */
     for (p=0; p<numparticles; ++p)
@@ -444,8 +444,8 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
       double deltax = vparticles[p_index(0,p)] *dtint;
       double deltay = vparticles[p_index(1,p)] *dtint;
 
-      printf("Delta x: %f\n",deltax);
-      printf("Delta y: %f\n",deltay);
+      printf("Delta x: %20.19f\n",deltax);
+      printf("Delta y: %20.19f\n",deltay);
 
       pparticlesnew[p_index(0,p)] = pparticles[p_index(0,p)] + deltax;
       pparticlesnew[p_index(1,p)] = pparticles[p_index(1,p)] + deltay;
@@ -456,8 +456,8 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
     {
       pparticles[p_index(0,p)] = pparticlesnew[p_index(0,p)];
       pparticles[p_index(1,p)] = pparticlesnew[p_index(1,p)];
-      printf("Updated posx: %f\n", pparticlesnew[p_index(0,p)]);
-      printf("Updated posy: %f\n", pparticlesnew[p_index(1,p)]);
+      printf("Updated posx: %20.19f\n", pparticlesnew[p_index(0,p)]);
+      printf("Updated posy: %20.19f\n", pparticlesnew[p_index(1,p)]);
     }
 
     ++iterations;
