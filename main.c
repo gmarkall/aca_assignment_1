@@ -1,16 +1,16 @@
-//=============================================
-// DEM Settling code
-//
-// Original by James Kimber
-//
-// Ported to C/Simplescalar by Graham Markall
-//
-//=============================================
+/*=============================================
+ * DEM Settling code
+ *
+ * Original by James Kimber
+ *
+ * Ported to C/Simplescalar by Graham Markall
+ *
+ *=============================================*/
 
 #include <stdio.h>
 #include "subs.h"
 
-// Simulation parameters. Don't change these from the defaults.
+/* Simulation parameters. Don't change these from the defaults. */
 
 #define NUM_PARTICLES 100
 #define RANDOM_SEED 1234

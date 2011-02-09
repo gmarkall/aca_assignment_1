@@ -1,9 +1,9 @@
-// subs.c
+/* subs.c */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <stdbool.h>
+#include "ss_bool.h"
 #include <string.h>
 #include "subs.h"
 
@@ -99,10 +99,10 @@ void initialise(int num_particles, int random_seed, double spring_krepel,
   stddevfac = std_dev_fac;
   particlerad = particle_radius;
 
-  /* particle_array_size needs to be big enough to hold 2D *
-   * coordinates for each particle.                        */
-  size_t particle_array_size = 2*num_particles*sizeof(double);
-  size_t radius_array_size   =   num_particles*sizeof(double);
+  /* particle_array_size needs to be big enough to hold 2D */
+  /* coordinates for each particle.                        */
+  unsigned int particle_array_size = 2*num_particles*sizeof(double);
+  unsigned int radius_array_size   =   num_particles*sizeof(double);
 
   pparticles    = (double*)malloc(particle_array_size);
   pparticlesnew = (double*)malloc(particle_array_size);
