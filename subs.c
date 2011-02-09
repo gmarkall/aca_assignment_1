@@ -324,7 +324,8 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
   }
 
   /* Iterate until force has been below threshold for 3 iterations */
-  while (dipsbelowthreshold <= MAX_DIPS_BELOW_THRESHOLD)
+  while ( (dipsbelowthreshold <= MAX_DIPS_BELOW_THRESHOLD)
+       && (iterations < 300) )
   {
     if (avforce < fmin)
     {
@@ -429,12 +430,6 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
     }
 
     ++iterations;
-
-    if (iterations > MAX_ITER)
-    {
-      fprintf(stderr, "MAX_ITER Exceeded. Computational error?\n");
-      dipsbelowthreshold = MAX_DIPS_BELOW_THRESHOLD+1;
-    }
   }
 
   return iterations;
