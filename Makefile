@@ -2,7 +2,7 @@
 CC := /homes/phjk/simplescalar/bin/gcc
 LD := /homes/phjk/simplescalar/bin/gcc
 CFLAGS := -O3 -Wall -Werror
-LDFLAGS := -lm
+LDFLAGS :=
 
 OBJS := main.o subs.o ss_rand.o
 
