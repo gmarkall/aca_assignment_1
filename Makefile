@@ -21,5 +21,8 @@ demsettle: $(OBJS)
 debug: $(DEBUG_OBJS)
 	$(LD) $(LDFLAGS) $(DEBUG_OBJS) -o demsettle
 
+rng: rng.o ss_rand.o
+	$(LD) $(LDFLAGS) $^ -o rng
+
 clean:
-	rm -f *.o demsettle 0 1
+	rm -f *.o demsettle 0 1 rng
