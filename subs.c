@@ -262,7 +262,7 @@ void output_positions(int file_index)
     y = pparticles[p_index(1,p)];
     r = prad[p];
 
-    fprintf(fp, "%20.19f\t%20.19f\t%20.19f\n", x, y, r);
+    fprintf(fp,"%17.16f\t%17.16f\t%17.16f\n",x,y,r);
   }
 
   fclose(fp);
@@ -310,29 +310,11 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
   fmax = springkrepel*pmovemax;
   fmin = springkrepel*min_threshold*minval_prad();
 
-  printf("Fmin %20.19f\n",fmin);
-  printf("Fmax %20.19f\n",fmax);
-
-  /* Damping (not currently used) and timestep       */
+  /* Damping  and timestep                           */
   /* are from simple harmonic motion. These affect   */
   /* stability and convergence speed.                */
   damping = 20.0*sqrt( cube( minval_prad() / particlerad ) * springkrepel);
   dtint =  dt_fac*sqrt( cube( minval_prad() / particlerad ) / springkrepel);
-
-  printf("minval_prad: %20.19f\n", minval_prad());
-  printf("dt_fac: %20.19f\n",dt_fac);
-  printf("springkrepel: %20.19f\n",springkrepel);
-
-  printf("Damping %20.19f\n",damping);
-  printf("Dting %20.19f\n",dtint);
-  printf("Particlerad: %20.19f\n",particlerad);
-
-  for (p=0; p<numparticles; ++p)
-  {
-    printf("Pos x: %20.19f\n", pparticles[p_index(0,p)]);
-    printf("Pos y: %20.19f\n", pparticles[p_index(1,p)]);
-  }
-
   fgrav = 50.0 * fmax * grav_fac;
   /* This large value to prevent the while loop terminating immediately */
   avforce = 100.0;
@@ -367,8 +349,6 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
       
       dist = sqrt( sqr(px) + sqr(py) );
       
-      printf("Distance: %20.19f\n",dist);
-
       /* At the origin we need to leave the gravity vector as zero */
       if (dist != 0.0)
       {
@@ -397,14 +377,12 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
 	/* If particles overlap, compute the force between them */
 	if (dist < sqr(rsum))
 	{
-	  printf("Overlap\n");
           dist = sqrt(dist);
 	  vecscale = rsum - dist;
 	  fmag = springkrepel * (vecscale / rsum);
 	  fxp = (fmag * dxp) / dist;
 	  fyp = (fmag * dyp) / dist;
-	  printf("Force x: %20.19f\n",fxp);
-	  printf("Force y: %20.19f\n",fyp);
+	  
 	  fparticles[p_index(0,p)] += fxp;
 	  fparticles[p_index(1,p)] += fyp;
 	  fparticles[p_index(0,n)] -= fxp;
@@ -421,8 +399,6 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
                      + sqr(fparticles[p_index(1,p)]) );
     }
     avforce = avforce / numparticles;
-
-    printf("Average force; %20.19f\n",avforce);
 
     /* Compute force on particles after damping */
     for (p=0; p<numparticles; ++p)
@@ -444,9 +420,6 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
       double deltax = vparticles[p_index(0,p)] *dtint;
       double deltay = vparticles[p_index(1,p)] *dtint;
 
-      printf("Delta x: %20.19f\n",deltax);
-      printf("Delta y: %20.19f\n",deltay);
-
       pparticlesnew[p_index(0,p)] = pparticles[p_index(0,p)] + deltax;
       pparticlesnew[p_index(1,p)] = pparticles[p_index(1,p)] + deltay;
     }
@@ -456,8 +429,6 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
     {
       pparticles[p_index(0,p)] = pparticlesnew[p_index(0,p)];
       pparticles[p_index(1,p)] = pparticlesnew[p_index(1,p)];
-      printf("Updated posx: %20.19f\n", pparticlesnew[p_index(0,p)]);
-      printf("Updated posy: %20.19f\n", pparticlesnew[p_index(1,p)]);
     }
 
     ++iterations;

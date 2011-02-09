@@ -31,9 +31,9 @@ int main(int argc, char **argv)
   distribute_particles_randomly();
   output_positions(0);
 
-  iterations = particlepos(GRAVITY_FACTOR, TIME_FACTOR, MIN_THRESHOLD);
-  
-  printf("Converged in %d iterations", iterations);
+  //iterations = particlepos(GRAVITY_FACTOR, TIME_FACTOR, MIN_THRESHOLD);
+  iterations = 0;
+  printf("With gravity, converged in %d iterations", iterations);
   output_positions(1);
 
   finalise();
