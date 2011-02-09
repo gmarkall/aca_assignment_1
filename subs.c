@@ -7,6 +7,11 @@
 #include <string.h>
 #include "subs.h"
 
+/* How long do we iterate for befor deciding to escape? */
+#define MAX_ITER 10
+/* How many dips below threshold force before we exit the iteration loop? */
+#define MAX_DIPS_BELOW_THRESHOLD 2
+
 static double* pparticles;           /* Particle x, y coordinates    */
 static double* pparticlesnew;        /* Updated particle coordinates */
 static double* fparticles;           /* Interparticle forces         */
@@ -22,6 +27,7 @@ static double stddevfac;             /* Std deviation factor         */
 static double lowerprad;             /* Particle radius lower bound  */
 static double upperprad;             /* Particle radius upper bound  */
 static double particlerad;           /* Mean particle radius         */
+static double damping;               /* Damping factor               */
 static double pi = 3.14159265358979; /* Pi!                          */
 
 /* Calculate index into "2D" array. */
@@ -267,7 +273,7 @@ int particlepos(int grav_fac, int dt_fac, int min_threshold)
   /* Particle index numbers */
   int p, n;
   /* Number of iterations where the force has dropped below threshold */
-  int z = 0;
+  int dipsbelowthreshold = 0;
   /* Distance between particles */
   double dxp, dyp;
   /* Force between particles */
@@ -286,8 +292,10 @@ int particlepos(int grav_fac, int dt_fac, int min_threshold)
   double fgrav, fmag, rsum;
   /* Maximum movement a particle can do in a timestep */
   double pmovemax, pmovemin;
-  /* Damping factor, internal time step */
-  double damping, dtint;
+  /* Particle mass */
+  double mass;
+  /* Internal time step */
+  double dtint;
 
   /* The most we want to move is 1/20th the smallest */
   /* radius in the system.                           */
@@ -318,11 +326,11 @@ int particlepos(int grav_fac, int dt_fac, int min_threshold)
   }
 
   /* Iterate until force has been below threshold for 3 iterations */
-  while (z<3)
+  while (dipsbelowthreshold <= MAX_DIPS_BELOW_THRESHOLD)
   {
     if (avforce < fmin)
     {
-      ++z;
+      ++dipsbelowthreshold;
     }
 
     /* Initialise forces between particles to zero */
@@ -382,10 +390,54 @@ int particlepos(int grav_fac, int dt_fac, int min_threshold)
     }
 
     /* Compute average force between particles */
+    avforce = 0.0;
+    for (p=0; p<numparticles; ++p)
+    {
+      avforce += sqrt( sqr(fparticles[p_index(0,p)]) 
+                     + sqr(fparticles[p_index(1,p)]) );
+    }
+    avforce = avforce / numparticles;
 
-    /* I WAS HERE I WAS HERE I WAS HERE */
-    /* I WAS HERE I WAS HERE I WAS HERE */
-    /* I WAS HERE I WAS HERE I WAS HERE */
+    printf("Average force; %f\n",avforce);
+
+    /* Compute force on particles after damping */
+    for (p=0; p<numparticles; ++p)
+    {
+      fparticles[p_index(0,p)] -= damping * vparticles[p_index(0,p)];
+      fparticles[p_index(1,p)] -= damping * vparticles[p_index(1,p)];
+    }
+
+    /* The remainder of the code in this block computes  */
+    /* the new particles positions by integrating F = ma */
+    
+    /* Update velocities based on forces, compute new positions */
+    for (p=0; p<numparticles; ++p)
+    {
+      mass = cube( prad[p] / pradstart[p] );
+      vparticles[p_index(0,p)] += fparticles[p_index(0,p)] + (mass * dtint);
+      vparticles[p_index(1,p)] += fparticles[p_index(1,p)] + (mass * dtint);
+
+      double deltax = vparticles[p_index(0,p)] *dtint;
+      double deltay = vparticles[p_index(1,p)] *dtint;
+
+      pparticlesnew[p_index(0,p)] = pparticles[p_index(0,p)] + deltax;
+      pparticlesnew[p_index(1,p)] = pparticles[p_index(1,p)] + deltay;
+    }
+    
+    /* Update positions */
+    for (p=0; p<numparticles; ++p)
+    {
+      pparticles[p_index(0,p)] = pparticlesnew[p_index(0,p)];
+      pparticles[p_index(1,p)] = pparticlesnew[p_index(1,p)];
+    }
+
+    ++iterations;
+
+    if (iterations > MAX_ITER)
+    {
+      fprintf(stderr, "MAX_ITER Exceeded. Computational error?\n");
+      dipsbelowthreshold = MAX_DIPS_BELOW_THRESHOLD+1;
+    }
   }
 
   return iterations;
