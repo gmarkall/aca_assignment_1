@@ -317,10 +317,15 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
   /* are from simple harmonic motion. These affect   */
   /* stability and convergence speed.                */
   damping = 20.0*sqrt( cube( minval_prad() / particlerad ) * springkrepel);
-  dtint =  dt_fac*sqrt( cube( minval_prad() / particlerad ) * springkrepel);
+  dtint =  dt_fac*sqrt( cube( minval_prad() / particlerad ) / springkrepel);
+
+  printf("minval_prad: %f\n", minval_prad());
+  printf("dt_fac: %f\n",dt_fac);
+  printf("springkrepel: %f\n",springkrepel);
 
   printf("Damping %f\n",damping);
   printf("Dting %f\n",dtint);
+  printf("Particlerad: %f\n",particlerad);
 
   for (p=0; p<numparticles; ++p)
   {
@@ -451,6 +456,8 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
     {
       pparticles[p_index(0,p)] = pparticlesnew[p_index(0,p)];
       pparticles[p_index(1,p)] = pparticlesnew[p_index(1,p)];
+      printf("Updated posx: %f\n", pparticlesnew[p_index(0,p)]);
+      printf("Updated posy: %f\n", pparticlesnew[p_index(1,p)]);
     }
 
     ++iterations;
