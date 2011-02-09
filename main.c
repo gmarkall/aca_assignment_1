@@ -12,7 +12,7 @@
 
 // Simulation parameters. Don't change these from the defaults.
 
-#define NUM_PARTICLES 3
+#define NUM_PARTICLES 40
 #define RANDOM_SEED 1234
 #define SPRING_KREPEL 10.0
 #define STD_DEV_FAC 0.0

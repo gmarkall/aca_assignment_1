@@ -8,7 +8,7 @@
 #include "subs.h"
 
 /* How long do we iterate for before deciding to escape? */
-#define MAX_ITER 10
+#define MAX_ITER 100
 /* How many dips below threshold force before we exit the iteration loop? */
 #define MAX_DIPS_BELOW_THRESHOLD 2
 
