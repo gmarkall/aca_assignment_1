@@ -20,6 +20,7 @@ static double* prad;                 /* Particle radii               */
 static double* pradstart;            /* Initial particle radii       */
 
 static int numparticles;             /* Number of particles          */
+static int numparticlesold;          /* Number of particles (again)  */
 static int rseed;                    /* Random seed                  */
 
 static double springkrepel;          /* Global repulsive forces      */
@@ -33,7 +34,7 @@ static double pi = 3.14159265358979; /* Pi!                          */
 /* Calculate index into "2D" array. */
 int p_index(int dim, int particle)
 {
-  int index = (dim*numparticles) + particle;
+  int index = (dim*numparticlesold) + particle;
   return index;
 }
 
@@ -92,6 +93,7 @@ void initialise(int num_particles, int random_seed, double spring_krepel,
                 double std_dev_fac, double particle_radius)
 {
   numparticles = num_particles;
+  numparticlesold = num_particles;
   rseed = random_seed;
   springkrepel = spring_krepel;
   stddevfac = std_dev_fac;
@@ -173,7 +175,7 @@ double normal_distribution()
 
 void distribute_particles_randomly()
 {
-  int p, numparticlesold, iter;
+  int p, iter;
   double theta, tabletdr;
 
   /* Seed the random number generator */
@@ -207,7 +209,7 @@ void distribute_particles_randomly()
 
   /* First particle is centred in the domain */
   pparticles[p_index(0,0)] = 0.0;
-  pparticles[p_index(0,1)] = 0.0;
+  pparticles[p_index(1,0)] = 0.0;
 
   /* Save the total number of particles.               */
   /* We only want to compute for the particles we have */
@@ -228,7 +230,7 @@ void distribute_particles_randomly()
     
     /* Let the system settle with the current number of */
     /* active particles.                                */
-    numparticles = p;
+    ++numparticles;
     iter = particlepos(0.0, 0.01, 1.0);
     printf("Particle %d took %d iterations.\n", p, iter);
   }
@@ -319,6 +321,12 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
 
   printf("Damping %f\n",damping);
   printf("Dting %f\n",dtint);
+
+  for (p=0; p<numparticles; ++p)
+  {
+    printf("Pos x: %f\n", pparticles[p_index(0,p)]);
+    printf("Pos y: %f\n", pparticles[p_index(1,p)]);
+  }
 
   fgrav = 50.0 * fmax * grav_fac;
   /* This large value to prevent the while loop terminating immediately */
