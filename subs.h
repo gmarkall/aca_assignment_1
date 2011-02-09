@@ -12,6 +12,6 @@ void distribute_particles_randomly();
 
 void output_positions(int file_index);
 
-int particlepos(int grav_fac, int dt_fac, int min_threshold);
+int particlepos(double grav_fac, double dt_fac, double min_threshold);
 
 #endif

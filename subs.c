@@ -7,7 +7,7 @@
 #include <string.h>
 #include "subs.h"
 
-/* How long do we iterate for befor deciding to escape? */
+/* How long do we iterate for before deciding to escape? */
 #define MAX_ITER 10
 /* How many dips below threshold force before we exit the iteration loop? */
 #define MAX_DIPS_BELOW_THRESHOLD 2
@@ -266,7 +266,7 @@ void output_positions(int file_index)
   fclose(fp);
 }
 
-int particlepos(int grav_fac, int dt_fac, int min_threshold)
+int particlepos(double grav_fac, double dt_fac, double min_threshold)
 {
   /* Number of update iterations */
   int iterations = 0;
@@ -308,11 +308,17 @@ int particlepos(int grav_fac, int dt_fac, int min_threshold)
   fmax = springkrepel*pmovemax;
   fmin = springkrepel*min_threshold*minval_prad();
 
+  printf("Fmin %f\n",fmin);
+  printf("Fmax %f\n",fmax);
+
   /* Damping (not currently used) and timestep       */
   /* are from simple harmonic motion. These affect   */
   /* stability and convergence speed.                */
   damping = 20.0*sqrt( cube( minval_prad() / particlerad ) * springkrepel);
   dtint =  dt_fac*sqrt( cube( minval_prad() / particlerad ) * springkrepel);
+
+  printf("Damping %f\n",damping);
+  printf("Dting %f\n",dtint);
 
   fgrav = 50.0 * fmax * grav_fac;
   /* This large value to prevent the while loop terminating immediately */
@@ -347,6 +353,8 @@ int particlepos(int grav_fac, int dt_fac, int min_threshold)
       py = pparticles[p_index(1,p)];
       
       dist = sqrt( sqr(px) + sqr(py) );
+      
+      printf("Distance: %f\n",dist);
 
       /* At the origin we need to leave the gravity vector as zero */
       if (dist != 0.0)
@@ -376,11 +384,14 @@ int particlepos(int grav_fac, int dt_fac, int min_threshold)
 	/* If particles overlap, compute the force between them */
 	if (dist < sqr(rsum))
 	{
+	  printf("Overlap\n");
           dist = sqrt(dist);
 	  vecscale = rsum - dist;
 	  fmag = springkrepel * (vecscale / rsum);
 	  fxp = (fmag * dxp) / dist;
 	  fyp = (fmag * dyp) / dist;
+	  printf("Force x: %f\n",fxp);
+	  printf("Force y: %f\n",fyp);
 	  fparticles[p_index(0,p)] += fxp;
 	  fparticles[p_index(1,p)] += fyp;
 	  fparticles[p_index(0,n)] -= fxp;
@@ -414,11 +425,14 @@ int particlepos(int grav_fac, int dt_fac, int min_threshold)
     for (p=0; p<numparticles; ++p)
     {
       mass = cube( prad[p] / pradstart[p] );
-      vparticles[p_index(0,p)] += fparticles[p_index(0,p)] + (mass * dtint);
-      vparticles[p_index(1,p)] += fparticles[p_index(1,p)] + (mass * dtint);
+      vparticles[p_index(0,p)] += (fparticles[p_index(0,p)] / mass) * dtint;
+      vparticles[p_index(1,p)] += (fparticles[p_index(1,p)] / mass) * dtint;
 
       double deltax = vparticles[p_index(0,p)] *dtint;
       double deltay = vparticles[p_index(1,p)] *dtint;
+
+      printf("Delta x: %f\n",deltax);
+      printf("Delta y: %f\n",deltay);
 
       pparticlesnew[p_index(0,p)] = pparticles[p_index(0,p)] + deltax;
       pparticlesnew[p_index(1,p)] = pparticles[p_index(1,p)] + deltay;
