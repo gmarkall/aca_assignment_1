@@ -228,7 +228,6 @@ void distribute_particles_randomly()
     /* active particles.                                */
     ++numparticles;
     iter = particlepos(0.0, 0.01, 1.0);
-    printf("Particle %d took %d iterations.\n", p, iter);
   }
 
   printf("Finished randomising particle positions.\n");
