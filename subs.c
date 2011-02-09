@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "ss_bool.h"
+#include "ss_rand.h"
 #include <string.h>
 #include "subs.h"
 
@@ -92,6 +93,9 @@ double minval_prad()
 void initialise(int num_particles, int random_seed, double spring_krepel, 
                 double std_dev_fac, double particle_radius)
 {
+  unsigned int particle_array_size;
+  unsigned int radius_array_size;
+  
   numparticles = num_particles;
   numparticlesold = num_particles;
   rseed = random_seed;
@@ -101,8 +105,8 @@ void initialise(int num_particles, int random_seed, double spring_krepel,
 
   /* particle_array_size needs to be big enough to hold 2D */
   /* coordinates for each particle.                        */
-  unsigned int particle_array_size = 2*num_particles*sizeof(double);
-  unsigned int radius_array_size   =   num_particles*sizeof(double);
+  particle_array_size = 2*num_particles*sizeof(double);
+  radius_array_size   =   num_particles*sizeof(double);
 
   pparticles    = (double*)malloc(particle_array_size);
   pparticlesnew = (double*)malloc(particle_array_size);
@@ -137,21 +141,16 @@ void finalise()
 
 double normal_distribution()
 {
-  double output;
   double randomx, randomy, rdistheight, actualy;
   double stddev, gaussian;
-  bool accept;
 
   stddev = stddevfac*particlerad;
-
-  /* By default, reject the particle */
-  accept = false;
 
   /* Get the height of the probability distribution */
   rdistheight = 1.0 / (sqrt(2.0*pi*stddev*stddev));
 
   /* Choose random numbers until we find an acceptable one */
-  while (!accept)
+  while (true)
   {
     randomx = drand48();
     randomy = drand48();
@@ -165,12 +164,9 @@ double normal_distribution()
     /* Test if the random number is acceptable */
     if (randomy <= actualy)
     {
-      output = randomx;
-      accept = true;
+      return randomx;
     }
   }
-
-  return output;
 }
 
 void distribute_particles_randomly()
@@ -286,6 +282,8 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
   double prn, prp;
   /* Particle x and y coords */
   double nx, ny, px, py;
+  /* Change in particle x and y */
+  double deltax, deltay;
   /* Distance of current particle from origin */
   double dist;
   /* Min force from smallest allowable overlap */
@@ -417,8 +415,8 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
       vparticles[p_index(0,p)] += (fparticles[p_index(0,p)] / mass) * dtint;
       vparticles[p_index(1,p)] += (fparticles[p_index(1,p)] / mass) * dtint;
 
-      double deltax = vparticles[p_index(0,p)] *dtint;
-      double deltay = vparticles[p_index(1,p)] *dtint;
+      deltax = vparticles[p_index(0,p)] *dtint;
+      deltay = vparticles[p_index(1,p)] *dtint;
 
       pparticlesnew[p_index(0,p)] = pparticles[p_index(0,p)] + deltax;
       pparticlesnew[p_index(1,p)] = pparticles[p_index(1,p)] + deltay;

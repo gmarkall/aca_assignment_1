@@ -1,4 +1,4 @@
-// ss_rand.c
+/* ss_rand.c */
 
 #include "ss_rand.h"
 
@@ -14,9 +14,10 @@ static unsigned int SEED = 93186752;
 /* return the next random number x: 0 <= x < 1*/
 double drand48 ()  
 {
+  double output;
   static unsigned int a = 1588635695, m = 4294967291U, q = 2, r = 1117695901;
   SEED = a*(SEED % q) - r*(SEED / q);
-  double output =  ((double)SEED / (double)m);
+  output =  ((double)SEED / (double)m);
   return output;
 }
 
