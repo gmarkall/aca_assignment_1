@@ -24,10 +24,11 @@ int main(int argc, char **argv)
 
   iterations = particlepos(GRAVITY_FACTOR, TIME_FACTOR, MIN_THRESHOLD);
   
-  printf("With gravity, converged in %d iterations\n", iterations);
+  printf("With gravity, converged in %d iterations.\n", iterations);
   output_positions(1);
 
-  print_metrics(MIN_THRESHOLD);
+  validate_results(MIN_THRESHOLD, iterations);
+  printf("Validation passed.\n");
 
   finalise();
 

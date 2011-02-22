@@ -455,7 +455,8 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
   return iterations;
 }
 
-void print_metrics(double min_threshold)
+/* Don't alter this function. */
+void validate_results(double min_threshold, int grav_iterations)
 {
   int p;
   int maxconvergeiter, avgconvergeiter;
@@ -531,6 +532,16 @@ void print_metrics(double min_threshold)
     fprintf(stderr, "value.\n\n");
     fprintf(stderr, "Maximum allowed: %f\n", fmin);
     fprintf(stderr, "Current value  : %f\n", avforce);
+    exit(EXIT_FAILURE);
+  }
+
+  if (grav_iterations > MAX_GRAVITY_ITERATIONS)
+  {
+    fprintf(stderr, "Maximum number of iterations when computing with ");
+    fprintf(stderr, "gravity exceeded.\n\n");
+    fprintf(stderr, "Maximum allowed: %d\n", MAX_GRAVITY_ITERATIONS);
+    fprintf(stderr, "Current value :  %d\n", grav_iterations);
+    exit(EXIT_FAILURE);
   }
 
 }
