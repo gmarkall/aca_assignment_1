@@ -4,9 +4,14 @@
 #define _PARAMETERS_H
 
 // Number of particles may be varied if this isn't enough for your
-// chosen architecture.
+// chosen architecture. You probably shouldn't be attempting to
+// use less than 1000.
 
 #define NUM_PARTICLES 1000
+
+// Print out extra information that may help you in debugging
+
+#define PRINT_DEBUG 1
 
 // Don't change these from the defaults.
 
@@ -18,5 +23,11 @@
 #define GRAVITY_FACTOR 0.1
 #define TIME_FACTOR 0.003
 #define MIN_THRESHOLD 0.2
+
+// Validation parameters. Don't change these either, unless
+// instructed to.
+
+#define MAX_RANDOM_ITERATIONS 75
+#define MAX_AVG_RANDOM_ITERATIONS 45
 
 #endif

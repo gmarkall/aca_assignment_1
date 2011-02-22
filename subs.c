@@ -32,6 +32,9 @@ static double particlerad;           /* Mean particle radius         */
 static double damping;               /* Damping factor               */
 static double pi = 3.14159265358979; /* Pi!                          */
 
+static int* convergencehistory;      /* Iterations to convergence    */
+                                     /* when each particle is added. */
+
 /* Calculate index into "2D" array. */
 int p_index(int dim, int particle)
 {
@@ -110,6 +113,9 @@ void initialise(int num_particles, int random_seed, double spring_krepel,
   fparticles    = (double*)malloc(particle_array_size);
   vparticles    = (double*)malloc(particle_array_size);
 
+  size_t conv_history_size = num_particles*sizeof(int);
+  convergencehistory = (int*)malloc(conv_history_size);
+
   prad      = (double*)malloc(radius_array_size);
   pradstart = (double*)malloc(radius_array_size);
 
@@ -118,7 +124,8 @@ void initialise(int num_particles, int random_seed, double spring_krepel,
      || (fparticles == NULL)
      || (vparticles == NULL)
      || (prad == NULL)
-     || (pradstart == NULL) )
+     || (pradstart == NULL) 
+     || (convergencehistory == NULL) )
   {
     fprintf(stderr, "Allocation error.\n");
     exit(EXIT_FAILURE);
@@ -134,6 +141,7 @@ void finalise()
   free(vparticles);
   free(prad);
   free(pradstart);
+  free(convergencehistory);
 }
 
 double normal_distribution()
@@ -212,6 +220,9 @@ void distribute_particles_randomly()
   pparticles[p_index(0,0)] = 0.0;
   pparticles[p_index(1,0)] = 0.0;
 
+  /* It takes no iterations to converge */
+  convergencehistory[0] = 0;
+
   /* Save the total number of particles.               */
   /* We only want to compute for the particles we have */
   numparticlesold = numparticles;
@@ -233,7 +244,7 @@ void distribute_particles_randomly()
     /* active particles.                                */
     ++numparticles;
     iter = particlepos(0.0, 0.01, 1.0);
-    printf("Particle %d took %d iterations.\n", p, iter);
+    convergencehistory[p] = iter;
   }
 
   printf("Finished randomising particle positions.\n");
@@ -447,8 +458,25 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
 void print_metrics(double min_threshold)
 {
   int p;
+  int maxconvergeiter, avgconvergeiter;
   double avforce;
   double fmin;
+
+  /* Compute convergence metrics */
+  maxconvergeiter = 0;
+  avgconvergeiter = 0;
+
+  for (p=0; p<numparticles; ++p)
+  {
+    int iterations = convergencehistory[p];
+
+    if (iterations > maxconvergeiter)
+    {
+      maxconvergeiter = iterations;
+    }
+    avgconvergeiter += iterations;
+  }
+  avgconvergeiter = avgconvergeiter / numparticles;
 
   /* Compute fmin */
   fmin = springkrepel*min_threshold*minval_prad();
@@ -464,7 +492,19 @@ void print_metrics(double min_threshold)
 
   /* Compute average distance between particles */
 
+#if PRINT_DEBUG
+  /* Print out convergence history */
+  for (p=0; p<numparticles; ++p)
+  {
+    printf("Particle %d took %d iterations.\n", p, convergencehistory[p]);
+  }
+
+  /* Print out metrics */
   printf("Fmin: %f\n", fmin);
   printf("Average force: %f\n", avforce);
+  printf("Average randomisation iterations: %d\n", avgconvergeiter);
+  printf("Maximum randomisation iterations: %d\n", maxconvergeiter);
+#endif
+
 }
 

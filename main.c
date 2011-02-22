@@ -15,12 +15,12 @@ int main(int argc, char **argv)
 {
   int iterations;
 
+  printf("Running with %d particles.\n", NUM_PARTICLES);
+
   initialise(NUM_PARTICLES, RANDOM_SEED, SPRING_KREPEL, STD_DEV_FAC, PARTICLE_RADIUS);
 
   distribute_particles_randomly();
   output_positions(0);
-
-  print_metrics(1.0);
 
   iterations = particlepos(GRAVITY_FACTOR, TIME_FACTOR, MIN_THRESHOLD);
   
