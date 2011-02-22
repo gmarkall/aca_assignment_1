@@ -9,18 +9,7 @@
 
 #include <stdio.h>
 #include "subs.h"
-
-// Simulation parameters. Don't change these from the defaults.
-
-#define NUM_PARTICLES 700
-#define RANDOM_SEED 1234
-#define SPRING_KREPEL 10.0
-#define STD_DEV_FAC 0.0
-#define PARTICLE_RADIUS 0.00005
-
-#define GRAVITY_FACTOR 0.1
-#define TIME_FACTOR 0.003
-#define MIN_THRESHOLD 0.2
+#include "parameters.h"
 
 int main(int argc, char **argv)
 {

@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "subs.h"
+#include "parameters.h"
 
 /* How long do we iterate for before deciding to escape? */
 #define MAX_ITER 50000
