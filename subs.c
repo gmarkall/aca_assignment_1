@@ -506,5 +506,24 @@ void print_metrics(double min_threshold)
   printf("Maximum randomisation iterations: %d\n", maxconvergeiter);
 #endif
 
+  /* Validate output */
+  if (avgconvergeiter > MAX_AVG_RANDOM_ITERATIONS)
+  {
+    fprintf(stderr, "Average number of iterations to converge during the ");
+    fprintf(stderr, "randomisation phase exceeded.\n\n");
+    fprintf(stderr, "Maximum allowed: %d\n", MAX_AVG_RANDOM_ITERATIONS);
+    fprintf(stderr, "Current value:   %d\n", avgconvergeiter);
+    exit(EXIT_FAILURE);
+  }
+
+  if (maxconvergeiter > MAX_RANDOM_ITERATIONS)
+  {
+    fprintf(stderr, "The maximum number of iterations taken to converge ");
+    fprintf(stderr, "when adding any one particle is exceeded.\n\n");
+    fprintf(stderr, "Maximum allowed: %d\n", MAX_RANDOM_ITERATIONS);
+    fprintf(stderr, "Current value:   %d\n", maxconvergeiter);
+    exit(EXIT_FAILURE);
+  }
+
 }
 
