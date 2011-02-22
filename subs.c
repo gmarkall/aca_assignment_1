@@ -525,5 +525,13 @@ void print_metrics(double min_threshold)
     exit(EXIT_FAILURE);
   }
 
+  if (avforce > fmin)
+  {
+    fprintf(stderr, "Average force between particles exceeds the expected ");
+    fprintf(stderr, "value.\n\n");
+    fprintf(stderr, "Maximum allowed: %f\n", fmin);
+    fprintf(stderr, "Current value  : %f\n", avforce);
+  }
+
 }
 

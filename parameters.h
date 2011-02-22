@@ -11,7 +11,7 @@
 
 // Print out extra information that may help you in debugging
 
-#define PRINT_DEBUG 1
+#define PRINT_DEBUG 0
 
 // Don't change these from the defaults.
 
