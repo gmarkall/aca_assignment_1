@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 {
   int iterations;
 
-  printf("Running with %d particles.\n", NUM_PARTICLES);
+  printf("\nRunning with %d particles.\n", NUM_PARTICLES);
 
   initialise(NUM_PARTICLES, RANDOM_SEED, SPRING_KREPEL, STD_DEV_FAC, PARTICLE_RADIUS);
 
