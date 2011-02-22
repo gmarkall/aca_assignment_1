@@ -14,4 +14,6 @@ void output_positions(int file_index);
 
 int particlepos(double grav_fac, double dt_fac, double min_threshold);
 
+void print_metrics(double min_threshold);
+
 #endif

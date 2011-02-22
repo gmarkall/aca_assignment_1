@@ -442,3 +442,28 @@ int particlepos(double grav_fac, double dt_fac, double min_threshold)
 
   return iterations;
 }
+
+void print_metrics(double min_threshold)
+{
+  int p;
+  double avforce;
+  double fmin;
+
+  /* Compute fmin */
+  fmin = springkrepel*min_threshold*minval_prad();
+
+  /* Compute average force between particles */
+  avforce = 0.0;
+  for (p=0; p<numparticles; ++p)
+  {
+    avforce += sqrt( sqr(fparticles[p_index(0,p)])
+                   + sqr(fparticles[p_index(1,p)]) );
+  }
+  avforce = avforce / numparticles;
+
+  /* Compute average distance between particles */
+
+  printf("Fmin: %f\n", fmin);
+  printf("Average force: %f\n", avforce);
+}
+
